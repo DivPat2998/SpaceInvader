@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -70,6 +71,11 @@ public class GameView extends SurfaceView implements Runnable {
 
         for(int i=0; i<enemyCount; i++){
             enemies[i].update(player.getSpeed());
+
+            if(Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())){
+
+                enemies[i].setX(-200);
+            }
         }
     }
 
