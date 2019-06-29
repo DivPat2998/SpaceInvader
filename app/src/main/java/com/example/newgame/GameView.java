@@ -25,7 +25,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     private SurfaceHolder surfaceHolder;
 
-    private Enemy[] enemies;
+    private Enemy enemies;
+
+    private Friend friend;
 
     private int enemyCount = 3;
 
@@ -48,12 +50,11 @@ public class GameView extends SurfaceView implements Runnable {
             stars.add(s);
 
         }
-       enemies = new Enemy[enemyCount];
-        for(int i=0; i<enemyCount; i++){
-            enemies[i] = new Enemy(context, screenX, screenY);
-        }
+       enemies = new Enemy(context, screenX, screenY);
 
         boom = new Boom(context);
+
+        friend = new Friend(context, screenX, screenY);
 
     }
 
@@ -76,16 +77,13 @@ public class GameView extends SurfaceView implements Runnable {
             s.update(player.getSpeed());
         }
 
-        for(int i=0; i<enemyCount; i++){
-            enemies[i].update(player.getSpeed());
-
-            if(Rect.intersects(player.getDetectCollision(), enemies[i].getDetectCollision())){
-                boom.setX(enemies[i].getSpeed());
-                boom.setY(enemies[i].getSpeed());
-
-                enemies[i].setX(-200);
-            }
+        enemies.update(player.getSpeed());
+        if(Rect.intersects(player.getDetectCollision(),enemies.getDetectCollision())){
+            boom.setX(enemies.getX());
+            boom.setY(enemies.getY());
+            enemies.setX(-200);
         }
+        friend.update(player.getSpeed());
     }
 
     private void draw(){
@@ -100,12 +98,14 @@ public class GameView extends SurfaceView implements Runnable {
             }
             canvas.drawBitmap(player.getBitmap(),player.getX(), player.getY(), paint);
 
-            for(int i =0; i<enemyCount; i++){
-                canvas.drawBitmap(enemies[i].getBitmap(), enemies[i].getX(),enemies[i].getY(),paint);
 
-            }
+            canvas.drawBitmap(enemies.getBitmap(), enemies.getX(),enemies.getY(),paint);
+
+
 
             canvas.drawBitmap(boom.getBitmap(),boom.getX(),boom.getY(),paint);
+
+            canvas.drawBitmap(friend.getBitmap(),friend.getX(),friend.getY(),paint);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
 
