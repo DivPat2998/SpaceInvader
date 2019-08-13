@@ -19,6 +19,7 @@ public class Friend {
 
     private int maxY;
     private int minY;
+    private Rect detectCollision;
 
     public Friend(Context context, int screenX, int screenY){
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.friend);
@@ -29,6 +30,9 @@ public class Friend {
         Random generator = new Random();
         speed = generator.nextInt(6) + 10;
         x = screenX;
+        y = generator.nextInt(maxY) - bitmap.getHeight();
+
+        detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
 
     }
         public void update(int playerSpeed){
@@ -40,9 +44,23 @@ public class Friend {
             x = maxX;
             y = generator.nextInt(maxY) - bitmap.getHeight();
 
+
             }
 
-        }
+        detectCollision.left = x;
+        detectCollision.top = y;
+        detectCollision.right = x + bitmap.getWidth();
+        detectCollision.bottom = y + bitmap.getHeight();
+
+
+            }
+
+
+
+
+    public Rect getDetectCollision() {
+        return detectCollision;
+    }
 
     public Bitmap getBitmap(){
         return bitmap;
