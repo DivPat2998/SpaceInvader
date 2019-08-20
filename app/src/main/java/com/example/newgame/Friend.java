@@ -7,11 +7,15 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+/**
+ * Created by Manish on 10/24/2016.
+ */
+
 public class Friend {
 
     private Bitmap bitmap;
     private int x;
-    private  int y;
+    private int y;
     private int speed = 1;
 
     private int maxX;
@@ -19,9 +23,12 @@ public class Friend {
 
     private int maxY;
     private int minY;
+
+    //creating a rect object for a friendly ship
     private Rect detectCollision;
 
-    public Friend(Context context, int screenX, int screenY){
+
+    public Friend(Context context, int screenX, int screenY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.friend);
         maxX = screenX;
         maxY = screenY;
@@ -31,21 +38,19 @@ public class Friend {
         speed = generator.nextInt(6) + 10;
         x = screenX;
         y = generator.nextInt(maxY) - bitmap.getHeight();
-
+        //initializing rect object
         detectCollision = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
-
     }
-        public void update(int playerSpeed){
+
+    public void update(int playerSpeed) {
         x -= playerSpeed;
         x -= speed;
-        if(x < minX - bitmap.getWidth()){
+        if (x < minX - bitmap.getWidth()) {
             Random generator = new Random();
-            speed = generator.nextInt(10)+10;
+            speed = generator.nextInt(10) + 10;
             x = maxX;
             y = generator.nextInt(maxY) - bitmap.getHeight();
-
-
-            }
+        }
 
         detectCollision.left = x;
         detectCollision.top = y;
@@ -62,13 +67,18 @@ public class Friend {
         return detectCollision;
     }
 
-    public Bitmap getBitmap(){
+
+    //getters
+    public Bitmap getBitmap() {
         return bitmap;
     }
-    public int getX(){
+
+    public int getX() {
         return x;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
+
 }
