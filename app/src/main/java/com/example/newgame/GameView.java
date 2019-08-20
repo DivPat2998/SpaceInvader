@@ -1,6 +1,7 @@
 package com.example.newgame;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -42,12 +43,26 @@ public class GameView extends SurfaceView implements Runnable {
 
     boolean flag;
 
+    int score;
+
+    int highScore[] = new int[4];
+
+    SharedPreferences sharedPreferences;
+
 
     private boolean isGameOver;
 
     public GameView(Context context, int screenX, int screenY) {
         super(context);
 
+        score = 0;
+
+        sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME",Context.MODE_PRIVATE);
+
+        highScore[0] = sharedPreferences.getInt("score1",0);
+        highScore[1] = sharedPreferences.getInt("score2",0);
+        highScore[2] = sharedPreferences.getInt("score3",0);
+        highScore[3] = sharedPreferences.getInt("score4",0);
         player = new Player(context, screenX, screenY);
 
         surfaceHolder = getHolder();
@@ -84,7 +99,11 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void update() {
+
+        score++;
+
         player.update();
+
 
         boom.setX(-250);
         boom.setY(-250);
@@ -114,6 +133,20 @@ public class GameView extends SurfaceView implements Runnable {
                         playing = false;
 
                         isGameOver = true;
+
+                        for(int i=0;i<4;i++){
+                            if(highScore[i]<score){
+                                final int finalI = i;
+                                highScore[i] = 4;
+                                break;
+                            }
+                        }
+                        SharedPreferences.Editor e = sharedPreferences.edit();
+                        for(int i=0;i<4;i++){
+                            int j = i+1;
+                            e.putInt("score"+j,highScore[i]);
+                        }
+                        e.apply();
                     }
                 }
             }
@@ -129,6 +162,20 @@ public class GameView extends SurfaceView implements Runnable {
             playing = false;
 
             isGameOver = true;
+
+            for(int i=0;i<4;i++){
+                if(highScore[i]<score){
+                    final int finalI = i;
+                    highScore[i] = score;
+                    break;
+                }
+            }
+            SharedPreferences.Editor e = sharedPreferences.edit();
+            for(int i = 0;i<4;i++){
+                int j = i+1;
+                e.putInt("Score"+j,highScore[i]);
+            }
+            e.apply();
         }
     }
 
@@ -143,6 +190,8 @@ public class GameView extends SurfaceView implements Runnable {
                 paint.setStrokeWidth(s.getStarWidth());
                 canvas.drawPoint(s.getX(), s.getY(),paint);
             }
+            paint.setTextSize(30);
+            canvas.drawText("Score"+score,100,50,paint);
             canvas.drawBitmap(player.getBitmap(),player.getX(), player.getY(), paint);
 
 
